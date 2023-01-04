@@ -35,7 +35,7 @@ export default function Home() {
       <h1 className={styles.code}>Peerjs Test (joining)</h1>
       <div>
         <div className={styles.card}>
-        <label>Peer ID <input type="text" value={peerID} onChange={(e) => setPeerID(e.target.value)}/></label>
+        <label>Peer ID <input contentEditable={!isConnected} type="text" value={peerID} onChange={(e) => setPeerID(e.target.value)}/></label>
         </div>
     <PeerComponent partnerState={partnerState} myState={myState} setMyState={setMyState} isConnected={isConnected}/>
     </div>
