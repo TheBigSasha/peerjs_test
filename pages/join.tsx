@@ -43,6 +43,7 @@ export default function Home() {
               Peer ID{" "}
               <input
                 contentEditable={!isConnected}
+                disabled={isConnected}
                 type="text"
                 value={peerID}
                 onChange={(e) => setPeerID(e.target.value)}
