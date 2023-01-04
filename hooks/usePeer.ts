@@ -6,10 +6,10 @@ import { generateID } from '../utils/generateID'
     // Hook usage:
     // const [partnerState, myState, setMyState, isConnected] = useJoinPeerSession<StateInterface>(peerID)
 
-export function useJoinPeerSession<T> (peerID: string, initialState?: T): [T | undefined, T | undefined, (state: T) => void, boolean] {
+export function useJoinPeerSession<T> (peerID: string, initialState: T): [T | undefined, T, (state: T) => void, boolean] {
 
     const [partnerState, setPartnerState] = useState<T | undefined>()
-    const [myState, setMyState] = useState<T | undefined>(initialState)
+    const [myState, setMyState] = useState<T>(initialState)
     const [isConnected, setIsConnected] = useState(false)
 
     const [peer, setPeer] = useState<any>()
@@ -92,10 +92,10 @@ export function useJoinPeerSession<T> (peerID: string, initialState?: T): [T | u
     // Hook usage:
     // const [partnerState, myState, setMyState, isConnected, myID] = useHostPeerSession<StateInterface>()
 
-export function useHostPeerSession<T> (initialState?: T): [T | undefined, T | undefined, (state: T) => void, boolean, string] {
+export function useHostPeerSession<T> (initialState: T): [T | undefined, T, (state: T) => void, boolean, string] {
     
         const [partnerState, setPartnerState] = useState<T | undefined>()
-        const [myState, setMyState] = useState<T | undefined>(initialState)
+        const [myState, setMyState] = useState<T>(initialState)
         const [isConnected, setIsConnected] = useState(false)
         const [myID, setMyID] = useState('')
 

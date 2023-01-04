@@ -1,16 +1,17 @@
 import Head from 'next/head'
 import { Inter } from '@next/font/google'
 import styles from '../styles/Home.module.css'
-import PeerComponent, { StateInterface } from '../components/PeerComponent'
+import PeerComponent from '../components/PeerComponent'
 import { useHostPeerSession } from '../hooks/usePeer'
 import { getJoinURL } from '../utils/getJoinURL';
+import { StateInterface, defaultState } from '../utils/sharedState'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   // Get peerid from url args
 
-  const [partnerState, myState, setMyState, isConnected, myID] = useHostPeerSession<StateInterface>({message: "Hello World", color: "rgb(255,255,100)"})
+  const [partnerState, myState, setMyState, isConnected, myID] = useHostPeerSession<StateInterface>({...defaultState, message: "Hi I'm hosting", color: "#00e5ff"})
 
 
   return (
@@ -23,10 +24,12 @@ export default function Home() {
       </Head>
      <main className={styles.main}>
       <h1 className={styles.code}>Peerjs Test (hosting)</h1>
-      <div className={styles.description}>
+      <div>
+      <div className={styles.card}>
       {!myID && <p>Loading...</p>}
             {/**@ts-ignore*/}
-            {myID && <p>Join link <a href={getJoinURL(myID)} className={styles.code}>{myID}</a></p>}
+            {myID && <label>Join link <a href={getJoinURL(myID)} className={styles.code}>{myID}</a></label>}
+            </div>
       <PeerComponent partnerState={partnerState} myState={myState} setMyState={setMyState} isConnected={isConnected}/>
       </div>
       <a  href="/join">Join Existing Session</a>

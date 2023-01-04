@@ -1,10 +1,10 @@
 import Head from 'next/head'
 import { Inter } from '@next/font/google'
 import styles from '../styles/Home.module.css'
-import PeerComponent, { StateInterface } from '../components/PeerComponent'
-import { useHostPeerSession, useJoinPeerSession } from '../hooks/usePeer'
-import { getJoinURL } from '../utils/getJoinURL';
+import PeerComponent from '../components/PeerComponent'
+import { useJoinPeerSession } from '../hooks/usePeer'
 import { useState } from 'react'
+import { StateInterface, defaultState } from '../utils/sharedState'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,7 +19,7 @@ export default function Home() {
 
   const [peerID, setPeerID] = useState<string>(peerIDInit)
   
-  const [partnerState, myState, setMyState, isConnected] = useJoinPeerSession<StateInterface>(peerID, {message: "Hello World", color: "rgb(255,255,100)"})
+  const [partnerState, myState, setMyState, isConnected] = useJoinPeerSession<StateInterface>(peerID, {...defaultState, message: "Hi there I joined", color: "#ff7700"})
 
 
   return (
@@ -32,9 +32,10 @@ export default function Home() {
       </Head>
      <main className={styles.main}>
       <h1 className={styles.code}>Peerjs Test (joining)</h1>
-      <div className={styles.description}>
-
-      <label className={styles.card}>Peer ID <input type="text" value={peerID} onChange={(e) => setPeerID(e.target.value)}/></label>
+      <div>
+        <div className={styles.card}>
+        <label>Peer ID <input type="text" value={peerID} onChange={(e) => setPeerID(e.target.value)}/></label>
+        </div>
     <PeerComponent partnerState={partnerState} myState={myState} setMyState={setMyState} isConnected={isConnected}/>
     </div>
     <a href="/">Host</a>
