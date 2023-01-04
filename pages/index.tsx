@@ -5,6 +5,7 @@ import PeerComponent from '../components/PeerComponent'
 import { useHostPeerSession } from '../hooks/usePeer'
 import { getJoinURL } from '../utils/getJoinURL';
 import { StateInterface, defaultState } from '../utils/sharedState'
+import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -32,7 +33,7 @@ export default function Home() {
             </div>
       <PeerComponent partnerState={partnerState} myState={myState} setMyState={setMyState} isConnected={isConnected}/>
       </div>
-      <a  href="/join">Join Existing Session</a>
+      <Link href="/join">Join Existing Session</Link>
 
      </main>
     </>
