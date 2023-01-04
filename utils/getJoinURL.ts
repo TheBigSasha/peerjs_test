@@ -1,3 +1,3 @@
 export const getJoinURL = (id: string) => {
-    return `/?peerid=${id}`
+    return `/peerjs_test/?peerid=${id}`
 }
