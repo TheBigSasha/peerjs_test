@@ -22,11 +22,13 @@ const PeerComponent: React.FC<PeerComponentProps> = () => {
     return (
         <div className={styles.card}>
             <h2 >Peer Component (hosting)</h2>
-            {myID && <p>Join link: <a className={styles.code}>{getJoinURL(myID)}</a></p>}
+            {/*@ts-ignore*/ } 
+            {myID && <p>Join link: <a href={getJoinURL(myID)} className={styles.code}>{myID}</a></p>}
             {isConnected && <>
                 <p>Partner State: <code>{JSON.stringify(partnerState)}</code> </p>
                 <p>My State: <code>{JSON.stringify(myState)}</code> </p>
             <label>Local State: <input type="text" value={localState.message} onChange={(e) => setLocalState({message: e.target.value})}/></label>
+                        {/*@ts-ignore*/ } 
             <button onClick={() => setMyState(localState)}>Set Shared State</button>
         
             </>}

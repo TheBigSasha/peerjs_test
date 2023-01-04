@@ -1,3 +1,3 @@
 export const getJoinURL = (id: string) => {
-    return `localhost:3000/?peerid=${id}`
+    return `thebigsasha.github.io/peerjs_test/?peerid=${id}`
 }

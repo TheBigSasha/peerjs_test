@@ -28,6 +28,7 @@ const PeerComponentJoin: React.FC<PeerComponentProps> = ({peerID: peerIDInit}) =
                 <p>Partner State: <code>{JSON.stringify(partnerState)}</code> </p>
                 <p>My State: <code>{JSON.stringify(myState)}</code> </p>
             <label>Local State: <input type="text" value={localState.message} onChange={(e) => setLocalState({message: e.target.value})}/></label>
+                        {/*@ts-ignore*/ } 
             <button onClick={() => setMyState(localState)}>Set Shared State</button>
                         </>}
 

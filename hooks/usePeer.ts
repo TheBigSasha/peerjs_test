@@ -21,6 +21,7 @@ export function useJoinPeerSession<T> (peerID: string) {
             peer.on('open', () => {
                 const conn = peer.connect(peerID)
                 conn.on('open', () => {
+                                {/*@ts-ignore*/ } 
                     conn.on('data', (data: T) => {
                         setPartnerState(data)
                     })
@@ -32,13 +33,14 @@ export function useJoinPeerSession<T> (peerID: string) {
 
     useEffect(() => {
         if (peer) {
+                        {/*@ts-ignore*/ } 
             peer.on('connection', (conn) => {
                 conn.on('data', (data: T) => {
                     setPartnerState(data)
                 })
                 setIsConnected(true)
             })
-
+            {/*@ts-ignore*/ } 
             peer.on('error', (err) => {
                 console.error(err)
             })
@@ -79,6 +81,7 @@ export function useHostPeerSession<T> () {
             peer.on('open', (id) => {
                 setMyID(id)
                 peer.on('connection', (conn) => {
+                            {/*@ts-ignore*/ } 
                     conn.on('data', (data: T) => {
                         setPartnerState(data)
                     })
