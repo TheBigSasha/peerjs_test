@@ -33,11 +33,11 @@ export const defaultState: StateInterface = {
     score: 0,
   },
   dragger: {
-    x: 0,
-    y: 0,
-    borderRadius: 15,
-    width: 30,
-    height: 30,
+    x: 10,
+    y: 10,
+    borderRadius: 25,
+    width: 50,
+    height: 50,
     rotation: 0,
   }
 };

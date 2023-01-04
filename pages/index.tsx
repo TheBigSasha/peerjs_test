@@ -6,6 +6,8 @@ import { useHostPeerSession } from "../hooks/usePeer";
 import { getJoinURL } from "../utils/getJoinURL";
 import { StateInterface, defaultState } from "../utils/sharedState";
 import Link from "next/link";
+import { FaRegCopy } from "react-icons/fa";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,9 +38,10 @@ export default function Home() {
             {myID && (
               <label>
                 Join link{" "}
-                <a href={getJoinURL(myID)} className={styles.code}>
+                <a className={styles.code}>
                   {myID}
                 </a>
+                <FaRegCopy size={15} style={{marginLeft: 5}} onClick={() => navigator.clipboard.writeText(getJoinURL(myID, true))}/>
               </label>
             )}
           </div>

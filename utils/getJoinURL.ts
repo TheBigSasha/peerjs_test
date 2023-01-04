@@ -1,3 +1,3 @@
-export const getJoinURL = (id: string) => {
-  return `/peerjs_test/join?peerid=${id}`;
+export const getJoinURL = (id: string, full?: boolean) => {
+  return `${full ? "https://thebigsasha.github.io" : ""}/peerjs_test/join?peerid=${id}`;
 };
