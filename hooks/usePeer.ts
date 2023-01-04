@@ -27,6 +27,8 @@ export function useJoinPeerSession<T> (peerID: string, initialState?: T): [T | u
                         setPartnerState(data)
                     })
                     setIsConnected(true)
+
+
                 })
             })
         })
@@ -41,6 +43,17 @@ export function useJoinPeerSession<T> (peerID: string, initialState?: T): [T | u
                 })
                 setIsConnected(true)
             })
+
+            peer.on('error', (err: string) => {
+                console.error(err)
+            })
+
+            peer.on('data', (data: T) => {
+                setPartnerState(data)
+            })
+
+
+            
             {/*@ts-ignore*/ } 
             peer.on('error', (err) => {
                 console.error(err)
@@ -49,8 +62,21 @@ export function useJoinPeerSession<T> (peerID: string, initialState?: T): [T | u
             peer.on('close', () => {
                 setIsConnected(false)
             })
+
+            peer.on('open', () => {
+                const conn = peer.connect(peerID)
+
+                conn.on('data', (data: T) => {
+                    setPartnerState(data)
+                    setIsConnected(true)
+                }
+                )
+
+            }
+            )
+
         }
-    }, [peer])
+    }, [peer, peerID])
 
     useEffect(() => {
         if (isConnected && myState) {
@@ -76,8 +102,10 @@ export function useHostPeerSession<T> (initialState?: T): [T | undefined, T | un
         const [peer, setPeer] = useState<any>()
 
 
+    const conns =  peer?.connections.length;
 
-    useMemo(() => {
+
+    useEffect(() => {
         const shouldGetNewID = myID === '';
         const IDToUse = shouldGetNewID ? generateID() : myID
         console.log(`IDToUse: ${IDToUse}`)
@@ -99,6 +127,11 @@ export function useHostPeerSession<T> (initialState?: T): [T | undefined, T | un
                     conn.on('data', (data: T) => {
                         setPartnerState(data)
                     })
+
+            
+
+
+
                     setIsConnected(true)
                 })
             })
@@ -106,28 +139,32 @@ export function useHostPeerSession<T> (initialState?: T): [T | undefined, T | un
                 console.error(err)
             }
             )
-            peer.on('connection', (id) => {
 
-            // send local state to new connection
-            if (myState) {
-                id.send(myState)
-            }
+            
+
+            peer.on('close', () => {
+                setIsConnected(false)
             }
             )
+
+
+                
         })
         }
     }
-    , [myID])
+    , [myID, conns])
+
+    const connections = Object.values(peer?.connections || {})
 
     useEffect(() => {
-        if (isConnected && myState && peer) {
-            Object.values(peer.connections).forEach((conn: any) => {
+        if (isConnected && myState && connections) {
+            connections.forEach((conn: any) => {
                 conn[0].send(myState)
             }
             )
         }
     }
-    , [myState, isConnected, peer])
+    , [myState, isConnected, connections, connections.length])
 
     return [partnerState, myState, setMyState, isConnected, myID]
 }
