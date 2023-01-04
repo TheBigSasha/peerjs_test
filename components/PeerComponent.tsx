@@ -25,9 +25,12 @@ const PeerComponent: React.FC<PeerComponentProps> = () => {
             <h2 >Peer Component (hosting)</h2>
             {/*@ts-ignore*/ } 
             {!myID && <p>Loading...</p>}
+            {/**@ts-ignore*/}
             {myID && <p>Join link: <a href={getJoinURL(myID)} className={styles.code}>{myID}</a></p>}
             {isConnected && partnerState && <>
+                        {/**@ts-ignore*/}
             {partnerState && <p>Partner State: <code style={{color: partnerState.color}}>{partnerState.message}</code> </p>}
+                        {/**@ts-ignore*/}
             {myState && <p>My State: <code style={{color: myState.color}}>{myState.message}</code> </p>}
             <label>Message: <input type="text" value={localState.message} onChange={(e) => setLocalState({...localState, message: e.target.value})}/></label>
             <label>Color: <input type="color" value={localState.color} onChange={(e) => setLocalState({...localState, color: e.target.value})}/></label>

@@ -26,7 +26,9 @@ const PeerComponentJoin: React.FC<PeerComponentProps> = ({peerID: peerIDInit}) =
             <h2>Peer Component (joining)</h2>
             <label>Peer ID: <input type="text" value={peerID} onChange={(e) => setPeerID(e.target.value)}/></label>
             {isConnected && <>
+            {/**@ts-ignore*/}
             {partnerState &&                 <p>Partner State: <code style={{color: partnerState.color}}>{partnerState.message}</code> </p>}
+            {/**@ts-ignore*/}
             {myState && <p>My State: <code style={{color: myState.color}}>{myState.message}</code> </p> }
             <label>Message: <input type="text" value={localState.message} onChange={(e) => setLocalState({...localState, message: e.target.value})}/></label>
             <label>Color: <input type="color" value={localState.color} onChange={(e) => setLocalState({...localState, color: e.target.value})}/></label>
