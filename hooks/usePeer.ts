@@ -76,7 +76,7 @@ export function useHostPeerSession<T> () {
     const [peer, setPeer] = useState<any>()
 
 
-    const shouldGetNewID = myID !== '';
+    const shouldGetNewID = myID === '';
     useMemo(() => {
         import ('peerjs').then(({ default: Peer }) => {
             const peer = new Peer(shouldGetNewID ? generateID() : myID)
@@ -93,7 +93,7 @@ export function useHostPeerSession<T> () {
             })
         })
     }
-    , [myID, shouldGetNewID])
+    , [shouldGetNewID, myID])
 
     useEffect(() => {
         if (isConnected && myState && peer) {
