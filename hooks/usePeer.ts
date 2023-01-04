@@ -1,112 +1,105 @@
 import { useEffect, useState } from 'react'
-
-// Hook usage:
-// const [myPeerID, sharedState, setSharedState] = useHostPeerSession<StateInterface>()
-
-export function useHostPeerSession<T>() {
-    const [myPeerID, setMyPeerID] = useState<string>()
-    const [sharedState, setSharedState] = useState<T>()
-
-    const [peer, setPeer] = useState<any>()
-    
-    useEffect(() => {
-        import('peerjs').then(({ default: Peer }) => {
-        const peer = new Peer()
-
-        setPeer(peer)
-    
-        peer.on('open', (id) => {
-        setMyPeerID(id)
-        })
-    
-        peer.on('connection', (conn) => {
-        conn.on('data', (data) => {
-            setSharedState(data as T)
-        })
-        })
-    })
-    }, [])
-
-    useEffect(() => {
-        // send shared state to peer
-        if (peer) {
-        Object.values(peer.connections).forEach((connections) => {
-            connections.forEach((conn) => {
-                conn.send(sharedState)
-            })
-         }
-         )
-        }
+import { generateID } from '../utils/generateID'
 
 
-    
-    }, [peer, sharedState])
-
-
-    
-    return [myPeerID, sharedState, setSharedState] as const
-    }
 
     // Hook usage:
-    // const [sharedState, setSharedState, isConnected] = useJoinPeerSession<StateInterface>(peerID)
+    // const [partnerState, myState, setMyState, isConnected] = useJoinPeerSession<StateInterface>(peerID)
 
 export function useJoinPeerSession<T> (peerID: string) {
-    const [sharedState, setSharedState] = useState<T>()
+
+    const [partnerState, setPartnerState] = useState<T>()
+    const [myState, setMyState] = useState<T>()
     const [isConnected, setIsConnected] = useState(false)
+
     const [peer, setPeer] = useState<any>()
-    
+
     useEffect(() => {
-        import('peerjs').then(({ default: Peer }) => {
-        const peer = new Peer()
-
-        setPeer(peer)
-    
-        peer.on('open', (id) => {
-        const conn = peer.connect(peerID)
-    
-        conn.on('open', () => {
-            setIsConnected(true)
-        })
-    
-        conn.on('data', (data) => {
-            setSharedState(data as T)
-        })
-
-        conn.on('close', () => {
-            setIsConnected(false)
-        })
-
-        conn.on('error', () => {
-            setIsConnected(false)
-        }
-        )
-
-        peer.on('connection', (conn) => {
-            conn.on('data', (data) => {
-                setSharedState(data as T)
+        import ('peerjs').then(({ default: Peer }) => {
+            const peer = new Peer()
+            setPeer(peer)
+            peer.on('open', () => {
+                const conn = peer.connect(peerID)
+                conn.on('open', () => {
+                    conn.on('data', (data: T) => {
+                        setPartnerState(data)
+                    })
+                    setIsConnected(true)
+                })
             })
-            })    
-
-
-    })
-    })
+        })
     }, [peerID])
 
     useEffect(() => {
-        // send shared state to peer
         if (peer) {
-            Object.values(peer.connections).forEach((connections) => {
-                connections.forEach((conn) => {
-                    conn.send(sharedState)
+            peer.on('connection', (conn) => {
+                conn.on('data', (data: T) => {
+                    setPartnerState(data)
                 })
-             }
-             )
-            }
-    }, [peer, sharedState, isConnected, peerID])
+                setIsConnected(true)
+            })
+
+            peer.on('error', (err) => {
+                console.error(err)
+            })
+
+            peer.on('close', () => {
+                setIsConnected(false)
+            })
+        }
+    }, [peer])
+
+    useEffect(() => {
+        if (isConnected && myState) {
+            peer?.connections[peerID][0].send(myState)
+        }
+    }, [myState, isConnected, peer, peerID])
 
 
+    return [partnerState, myState, setMyState, isConnected]
+}
+
+
+    // Hook usage:
+    // const [partnerState, myState, setMyState, isConnected, myID] = useHostPeerSession<StateInterface>()
+
+export function useHostPeerSession<T> () {
     
-    return [sharedState, setSharedState, isConnected] as const
+        const [partnerState, setPartnerState] = useState<T>()
+        const [myState, setMyState] = useState<T>()
+        const [isConnected, setIsConnected] = useState(false)
+        const [myID, setMyID] = useState('')
+
+    const [peer, setPeer] = useState<any>()
+
+    useEffect(() => {
+        import ('peerjs').then(({ default: Peer }) => {
+            const peer = new Peer(generateID())
+            setPeer(peer)
+            peer.on('open', (id) => {
+                setMyID(id)
+                peer.on('connection', (conn) => {
+                    conn.on('data', (data: T) => {
+                        setPartnerState(data)
+                    })
+                    setIsConnected(true)
+                })
+            })
+        })
     }
+    , [])
+
+    useEffect(() => {
+        if (isConnected && myState && peer) {
+            Object.values(peer.connections).forEach((conn: any) => {
+                conn[0].send(myState)
+            }
+            )
+        }
+    }
+    , [myState, isConnected, peer])
+
+    return [partnerState, myState, setMyState, isConnected, myID]
+}
 
 

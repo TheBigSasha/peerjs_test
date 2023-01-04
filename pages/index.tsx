@@ -8,6 +8,13 @@ import PeerComponentJoin from '../components/PeerComponentJoin'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  // Get peerid from url args
+  let urlParams;
+  if(typeof window !== "undefined"){
+    urlParams = new URLSearchParams(window?.location.search);
+  }
+  const peerID = urlParams?.get('peerid');
+
   return (
     <>
       <Head>
@@ -19,7 +26,7 @@ export default function Home() {
      <main className={styles.main}>
       <h1 className={styles.code}>Peerjs Test</h1>
       <PeerComponent/>
-      <PeerComponentJoin/>
+      <PeerComponentJoin peerID={peerID || undefined}/>
      </main>
     </>
   )
