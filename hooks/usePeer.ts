@@ -152,6 +152,7 @@ export function useHostPeerSession<T> (initialState?: T): [T | undefined, T | un
         })
         }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     , [myID, conns])
 
     const connections = Object.values(peer?.connections || {})
