@@ -9,6 +9,7 @@ interface PeerComponentProps {
 
 interface StateInterface {
     message: string;
+    color: string;
 }
 
 // Peerjs is a peer-to-peer connection library
@@ -16,18 +17,20 @@ interface StateInterface {
 const PeerComponent: React.FC<PeerComponentProps> = () => {
 
     const [partnerState, myState, setMyState, isConnected, myID] = useHostPeerSession<StateInterface>()
-    const [localState, setLocalState] = React.useState<StateInterface>({message: "Hello World!"})
+    const [localState, setLocalState] = React.useState<StateInterface>({message: "Hello World!", color: "rgb(120,0,0)"})
     
     
     return (
         <div className={styles.card}>
             <h2 >Peer Component (hosting)</h2>
             {/*@ts-ignore*/ } 
+            {!myID && <p>Loading...</p>}
             {myID && <p>Join link: <a href={getJoinURL(myID)} className={styles.code}>{myID}</a></p>}
-            {isConnected && <>
-                <p>Partner State: <code>{JSON.stringify(partnerState)}</code> </p>
-                <p>My State: <code>{JSON.stringify(myState)}</code> </p>
-            <label>Local State: <input type="text" value={localState.message} onChange={(e) => setLocalState({message: e.target.value})}/></label>
+            {isConnected && partnerState && <>
+            {partnerState && <p>Partner State: <code style={{color: partnerState.color}}>{partnerState.message}</code> </p>}
+            {myState && <p>My State: <code style={{color: myState.color}}>{myState.message}</code> </p>}
+            <label>Message: <input type="text" value={localState.message} onChange={(e) => setLocalState({...localState, message: e.target.value})}/></label>
+            <label>Color: <input type="color" value={localState.color} onChange={(e) => setLocalState({...localState, color: e.target.value})}/></label>
                         {/*@ts-ignore*/ } 
             <button onClick={() => setMyState(localState)}>Set Shared State</button>
         

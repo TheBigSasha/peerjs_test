@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { generateID } from '../utils/generateID'
 
 
@@ -13,6 +13,7 @@ export function useJoinPeerSession<T> (peerID: string) {
     const [isConnected, setIsConnected] = useState(false)
 
     const [peer, setPeer] = useState<any>()
+
 
     useEffect(() => {
         import ('peerjs').then(({ default: Peer }) => {
@@ -74,9 +75,11 @@ export function useHostPeerSession<T> () {
 
     const [peer, setPeer] = useState<any>()
 
-    useEffect(() => {
+
+    const shouldGetNewID = myID !== '';
+    useMemo(() => {
         import ('peerjs').then(({ default: Peer }) => {
-            const peer = new Peer(generateID())
+            const peer = new Peer(shouldGetNewID ? generateID() : myID)
             setPeer(peer)
             peer.on('open', (id) => {
                 setMyID(id)
@@ -90,7 +93,7 @@ export function useHostPeerSession<T> () {
             })
         })
     }
-    , [])
+    , [myID, shouldGetNewID])
 
     useEffect(() => {
         if (isConnected && myState && peer) {

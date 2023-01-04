@@ -8,8 +8,8 @@ interface PeerComponentProps {
 
 interface StateInterface {
     message: string;
+    color: string;
 }
-
 // Peerjs is a peer-to-peer connection library
 // This component enables a simple peer-to-peer connection
 const PeerComponentJoin: React.FC<PeerComponentProps> = ({peerID: peerIDInit}) => {
@@ -17,7 +17,8 @@ const PeerComponentJoin: React.FC<PeerComponentProps> = ({peerID: peerIDInit}) =
     const [peerID, setPeerID] = React.useState<string>(peerIDInit || "")
 
     const [partnerState, myState, setMyState, isConnected] = useJoinPeerSession<StateInterface>(peerID)
-    const [localState, setLocalState] = React.useState<StateInterface>({message: "Hello World!"})
+    const [localState, setLocalState] = React.useState<StateInterface>({message: "Hello World!", color: "rgb(120,0,0)"})
+
     
     
     return (
@@ -25,9 +26,10 @@ const PeerComponentJoin: React.FC<PeerComponentProps> = ({peerID: peerIDInit}) =
             <h2>Peer Component (joining)</h2>
             <label>Peer ID: <input type="text" value={peerID} onChange={(e) => setPeerID(e.target.value)}/></label>
             {isConnected && <>
-                <p>Partner State: <code>{JSON.stringify(partnerState)}</code> </p>
-                <p>My State: <code>{JSON.stringify(myState)}</code> </p>
-            <label>Local State: <input type="text" value={localState.message} onChange={(e) => setLocalState({message: e.target.value})}/></label>
+            {partnerState &&                 <p>Partner State: <code style={{color: partnerState.color}}>{partnerState.message}</code> </p>}
+            {myState && <p>My State: <code style={{color: myState.color}}>{myState.message}</code> </p> }
+            <label>Message: <input type="text" value={localState.message} onChange={(e) => setLocalState({...localState, message: e.target.value})}/></label>
+            <label>Color: <input type="color" value={localState.color} onChange={(e) => setLocalState({...localState, color: e.target.value})}/></label>
                         {/*@ts-ignore*/ } 
             <button onClick={() => setMyState(localState)}>Set Shared State</button>
                         </>}
