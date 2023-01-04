@@ -6,10 +6,10 @@ import { generateID } from '../utils/generateID'
     // Hook usage:
     // const [partnerState, myState, setMyState, isConnected] = useJoinPeerSession<StateInterface>(peerID)
 
-export function useJoinPeerSession<T> (peerID: string) {
+export function useJoinPeerSession<T> (peerID: string, initialState?: T): [T | undefined, T | undefined, (state: T) => void, boolean] {
 
-    const [partnerState, setPartnerState] = useState<T>()
-    const [myState, setMyState] = useState<T>()
+    const [partnerState, setPartnerState] = useState<T | undefined>()
+    const [myState, setMyState] = useState<T | undefined>(initialState)
     const [isConnected, setIsConnected] = useState(false)
 
     const [peer, setPeer] = useState<any>()
@@ -66,20 +66,31 @@ export function useJoinPeerSession<T> (peerID: string) {
     // Hook usage:
     // const [partnerState, myState, setMyState, isConnected, myID] = useHostPeerSession<StateInterface>()
 
-export function useHostPeerSession<T> () {
+export function useHostPeerSession<T> (initialState?: T): [T | undefined, T | undefined, (state: T) => void, boolean, string] {
     
-        const [partnerState, setPartnerState] = useState<T>()
-        const [myState, setMyState] = useState<T>()
+        const [partnerState, setPartnerState] = useState<T | undefined>()
+        const [myState, setMyState] = useState<T | undefined>(initialState)
         const [isConnected, setIsConnected] = useState(false)
         const [myID, setMyID] = useState('')
 
-    const [peer, setPeer] = useState<any>()
+        const [peer, setPeer] = useState<any>()
 
 
-    const shouldGetNewID = myID === '';
+
     useMemo(() => {
+        const shouldGetNewID = myID === '';
+        const IDToUse = shouldGetNewID ? generateID() : myID
+        console.log(`IDToUse: ${IDToUse}`)
+
+        if(peer && !shouldGetNewID) {return}
+        else
+        {
+
+            if(peer && shouldGetNewID) {peer.destroy()}
+
+        
         import ('peerjs').then(({ default: Peer }) => {
-            const peer = new Peer(shouldGetNewID ? generateID() : myID)
+            const peer = new Peer(IDToUse)
             setPeer(peer)
             peer.on('open', (id) => {
                 setMyID(id)
@@ -91,9 +102,22 @@ export function useHostPeerSession<T> () {
                     setIsConnected(true)
                 })
             })
+            peer.on('error', (err) => {
+                console.error(err)
+            }
+            )
+            peer.on('connection', (id) => {
+
+            // send local state to new connection
+            if (myState) {
+                id.send(myState)
+            }
+            }
+            )
         })
+        }
     }
-    , [shouldGetNewID, myID])
+    , [myID])
 
     useEffect(() => {
         if (isConnected && myState && peer) {
