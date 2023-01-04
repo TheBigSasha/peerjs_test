@@ -139,7 +139,13 @@ export function useHostPeerSession<T>(
   useEffect(() => {
     if (isConnected && myState && connections) {
       connections.forEach((conn: any) => {
-        conn[0].send(myState);
+        if(conn && conn[0]){
+            conn[0].send(myState);
+        }
+        else 
+        {
+            setIsConnected(false);
+        }
       });
     }
   }, [myState, isConnected, connections, connections.length]);
