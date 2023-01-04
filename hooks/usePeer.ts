@@ -127,6 +127,11 @@ export function useHostPeerSession<T>(
           peer.on("close", () => {
             setIsConnected(false);
           });
+
+          peer.on("disconnected", () => {
+            setIsConnected(false);
+          }
+        );
         });
       }
     },
