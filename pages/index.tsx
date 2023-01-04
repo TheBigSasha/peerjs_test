@@ -1,19 +1,23 @@
-import Head from 'next/head'
-import { Inter } from '@next/font/google'
-import styles from '../styles/Home.module.css'
-import PeerComponent from '../components/PeerComponent'
-import { useHostPeerSession } from '../hooks/usePeer'
-import { getJoinURL } from '../utils/getJoinURL';
-import { StateInterface, defaultState } from '../utils/sharedState'
-import Link from 'next/link'
+import Head from "next/head";
+import { Inter } from "@next/font/google";
+import styles from "../styles/Home.module.css";
+import PeerComponent from "../components/PeerComponent";
+import { useHostPeerSession } from "../hooks/usePeer";
+import { getJoinURL } from "../utils/getJoinURL";
+import { StateInterface, defaultState } from "../utils/sharedState";
+import Link from "next/link";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   // Get peerid from url args
 
-  const [partnerState, myState, setMyState, isConnected, myID] = useHostPeerSession<StateInterface>({...defaultState, message: "Hi I'm hosting", color: "#00e5ff"})
-
+  const [partnerState, myState, setMyState, isConnected, myID] =
+    useHostPeerSession<StateInterface>({
+      ...defaultState,
+      message: "Hi I'm hosting",
+      color: "#00e5ff",
+    });
 
   return (
     <>
@@ -23,19 +27,30 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-     <main className={styles.main}>
-      <h1 className={styles.code}>Peerjs Test (hosting)</h1>
-      <div>
-      <div className={styles.card}>
-      {!myID && <p>Loading...</p>}
+      <main className={styles.main}>
+        <h1 className={styles.code}>Peerjs Test (hosting)</h1>
+        <div>
+          <div className={styles.card}>
+            {!myID && <p>Loading...</p>}
             {/**@ts-ignore*/}
-            {myID && <label>Join link <a href={getJoinURL(myID)} className={styles.code}>{myID}</a></label>}
-            </div>
-      <PeerComponent partnerState={partnerState} myState={myState} setMyState={setMyState} isConnected={isConnected}/>
-      </div>
-      <Link href="/join">Join Existing Session</Link>
-
-     </main>
+            {myID && (
+              <label>
+                Join link{" "}
+                <a href={getJoinURL(myID)} className={styles.code}>
+                  {myID}
+                </a>
+              </label>
+            )}
+          </div>
+          <PeerComponent
+            partnerState={partnerState}
+            myState={myState}
+            setMyState={setMyState}
+            isConnected={isConnected}
+          />
+        </div>
+        <Link href="/join">Join Existing Session</Link>
+      </main>
     </>
-  )
+  );
 }
