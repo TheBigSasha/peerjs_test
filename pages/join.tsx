@@ -2,7 +2,7 @@ import Head from "next/head";
 import { Inter } from "@next/font/google";
 import styles from "../styles/Home.module.css";
 import PeerComponent from "../components/PeerComponent";
-import { useJoinPeerSession } from "../hooks/usePeer";
+import { useJoinPeerSession } from "@thebigsasha/react-peerjs-hooks";
 import { useState } from "react";
 import { StateInterface, defaultState } from "../utils/sharedState";
 import Link from "next/link";
